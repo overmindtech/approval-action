@@ -209,7 +209,7 @@ describe('decision-engine', () => {
   });
 
   describe('generateReviewComment', () => {
-    it('should generate approval comment', () => {
+    it('should generate approval comment with Overmind styling', () => {
       const result: DecisionResult = {
         decision: 'approve',
         reason: 'All safety checks passed',
@@ -228,13 +228,17 @@ describe('decision-engine', () => {
 
       const comment = generateReviewComment(result, parsed);
       expect(comment).toContain('✅');
-      expect(comment).toContain('Approved');
+      expect(comment).toContain('Auto-Approved');
       expect(comment).toContain('All safety checks passed');
       expect(comment).toContain('Routine');
-      expect(comment).toContain('5 items, 10 edges');
+      expect(comment).toContain('**Items** `5`');
+      expect(comment).toContain('**Edges** `10`');
+      expect(comment).toContain('<img alt="Overmind"'); // Logo
+      expect(comment).toContain('<h3>'); // H3 headers
+      expect(comment).toContain('---'); // Dividers
     });
 
-    it('should generate block comment', () => {
+    it('should generate block comment with Overmind styling', () => {
       const result: DecisionResult = {
         decision: 'block',
         reason: 'Found 2 high risks',
@@ -251,9 +255,11 @@ describe('decision-engine', () => {
 
       const comment = generateReviewComment(result, parsed);
       expect(comment).toContain('⛔');
-      expect(comment).toContain('Blocked');
+      expect(comment).toContain('Auto-Blocked');
       expect(comment).toContain('2 high risks');
-      expect(comment).toContain('2 high, 1 medium, 0 low');
+      expect(comment).toContain('**High** `2`');
+      expect(comment).toContain('**Medium** `1`');
+      expect(comment).toContain('🔴 Decision'); // Red emoji for blocked
     });
   });
 });

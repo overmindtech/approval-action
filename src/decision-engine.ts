@@ -98,33 +98,59 @@ export function makeDecision(parsed: ParsedComment, config: Config): DecisionRes
 }
 
 /**
- * Generate detailed comment body for PR review
+ * Generate detailed comment body for PR review matching Overmind's styling
  */
 export function generateReviewComment(result: DecisionResult, parsed: ParsedComment): string {
-  const emoji = result.decision === 'approve' ? '✅' : '⛔';
-  const status = result.decision === 'approve' ? 'Approved' : 'Blocked';
-  
-  let comment = `${emoji} **Overmind Auto-${status}**\n\n`;
+  const isApproved = result.decision === 'approve';
+  const statusEmoji = isApproved ? '✅' : '⛔';
+  const statusText = isApproved ? 'Auto-Approved' : 'Auto-Blocked';
+  const headerEmoji = isApproved ? '🟢' : '🔴';
+
+  let comment = '';
+
+  // Header with logo (matching Overmind style)
+  comment += `<p align="center">\n`;
+  comment += `  <img alt="Overmind" src="https://raw.githubusercontent.com/overmindtech/cli/main/assets/logo.png" width="124px" align="center">\n`;
+  comment += `</p>\n\n`;
+
+  // Status heading
+  comment += `<h3 align="center">${statusEmoji} ${statusText}</h3>\n\n`;
+
+  comment += `---\n\n`;
+
+  // Decision section
+  comment += `<h3>${headerEmoji} Decision</h3>\n\n`;
   comment += `${result.reason}\n\n`;
-  
+
+  // Signals section (if any)
   if (parsed.signals.length > 0) {
-    comment += `**Signals:**\n`;
+    comment += `---\n\n`;
+    comment += `<h3>📊 Signals Summary</h3>\n\n`;
     for (const signal of parsed.signals) {
-      comment += `- ${signal.category}: ${signal.severity} ${signal.emoji}\n`;
+      comment += `**${signal.category}** ${signal.emoji} \`${signal.severity >= 0 ? '+' : ''}${signal.severity}\`\n\n`;
     }
-    comment += `\n`;
   }
-  
-  comment += `**Risks:** ${result.risksSummary.high} high, ${result.risksSummary.medium} medium, ${result.risksSummary.low} low\n\n`;
-  
+
+  // Risks section
+  comment += `---\n\n`;
+  comment += `<h3>🔥 Risks Summary</h3>\n\n`;
+  comment += `**High** \`${result.risksSummary.high}\` · **Medium** \`${result.risksSummary.medium}\` · **Low** \`${result.risksSummary.low}\`\n\n`;
+
+  // Blast Radius section
   if (parsed.blastRadius.items > 0 || parsed.blastRadius.edges > 0) {
-    comment += `**Blast Radius:** ${parsed.blastRadius.items} items, ${parsed.blastRadius.edges} edges\n\n`;
+    comment += `---\n\n`;
+    comment += `<h3>💥 Blast Radius</h3>\n\n`;
+    comment += `**Items** \`${parsed.blastRadius.items}\` · **Edges** \`${parsed.blastRadius.edges}\`\n\n`;
   }
-  
+
+  // Footer with link
   if (parsed.changeUrl) {
-    comment += `[View in Overmind ↗](${parsed.changeUrl})\n`;
+    comment += `---\n\n`;
+    comment += `<p align="center">\n`;
+    comment += `  <a href="${parsed.changeUrl}">View full analysis in Overmind ↗</a>\n`;
+    comment += `</p>\n`;
   }
-  
+
   return comment;
 }
 

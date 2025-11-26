@@ -2,17 +2,6 @@
 
 Automatically approve or block PRs based on Overmind's risk analysis and change signals.
 
-## Why We're Building This
-
-Multiple customers have asked for automated approval workflows based on Overmind's analysis. They want to:
-
-- **Auto-approve low-risk changes** without manual review bottlenecks
-- **Auto-block high-risk changes** to prevent accidental deployments
-- **Reduce review fatigue** by only escalating changes that need human judgment
-- **Enforce organizational policies** through automated guardrails
-
-This GitHub Action makes Overmind's analysis actionable by letting teams codify their approval criteria and automate safe deployment decisions.
-
 ## What This Action Does
 
 The action parses the Overmind markdown comment that already appears in PRs and makes approval/blocking decisions based on configurable thresholds.
@@ -30,10 +19,10 @@ The action reads the markdown comment that Overmind posts containing:
 
 Based on the parsed analysis, the action:
 
-- ✅ **Approves** the PR if all safety checks pass
-- ⛔ **Blocks** the PR (requests changes) if risks exceed thresholds
-- 💬 **Comments** with explanation of the decision
-- 📊 **Outputs** structured data for other workflow steps
+- **Approves** the PR if all safety checks pass
+- **Blocks** the PR (requests changes) if risks exceed thresholds
+- **Comments** with explanation of the decision
+- **Outputs** structured data for other workflow steps
 
 ## How It Works
 

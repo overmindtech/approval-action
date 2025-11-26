@@ -1,0 +1,54 @@
+name: 'Overmind Auto-Approval'
+description: 'Automatically approve or block PRs based on Overmind analysis thresholds'
+branding:
+  icon: 'check-circle'
+  color: 'green'
+inputs:
+  github-token:
+    description: 'GitHub token for PR access'
+    required: true
+  block-on-high-risks:
+    description: 'Block if any high risks found'
+    required: false
+    default: 'true'
+  max-medium-risks:
+    description: 'Maximum medium risks before blocking'
+    required: false
+    default: '3'
+  max-low-risks:
+    description: 'Maximum low risks before blocking'
+    required: false
+    default: '10'
+  policy-signal-threshold:
+    description: 'Block if policy signals are less than or equal to this value'
+    required: false
+    default: '-2'
+  cost-signal-threshold:
+    description: 'Block if cost signals are less than or equal to this value'
+    required: false
+    default: '-2'
+  min-routine-score:
+    description: 'Require routine score to be greater than or equal to this value'
+    required: false
+    default: '-1'
+  auto-approve:
+    description: 'Actually approve/block PRs (vs just comment)'
+    required: false
+    default: 'true'
+  wait-timeout:
+    description: 'Seconds to wait for Overmind comment'
+    required: false
+    default: '300'
+outputs:
+  decision:
+    description: 'The decision made: approved, blocked, or skipped'
+  reason:
+    description: 'Human-readable explanation of the decision'
+  risks-summary:
+    description: 'JSON object with risk counts by severity'
+  change-url:
+    description: 'Link to Overmind analysis'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
